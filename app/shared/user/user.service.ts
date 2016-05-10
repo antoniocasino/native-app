@@ -1,5 +1,5 @@
 import {Injectable} from "angular2/core";
-import {Http, Headers, Response} from "angular2/http";
+import {Http, Headers, Response, RequestOptions} from "angular2/http";
 import {User} from "./user";
 import {Config} from "../config";
 import {Observable} from "rxjs/Rx";
@@ -34,19 +34,17 @@ export class UserService {
   login(user: User) {
     let headers = new Headers();
     headers.append("Content-Type", "application/json");
+    let options = new RequestOptions({ headers: headers });
 
     return this._http.post(
-      Config.apiUrl + "login",
+      Config.apiUrl + "login/",
       JSON.stringify({
         username: user.email,
         password: user.password
       }),
-      { headers: headers }
+      options
     )
     .map(response => response.json())
-    .do(data => {
-      Config.token = data.Result.access_token;
-    })
     .catch(this.handleErrors);
   }
 }

@@ -10,17 +10,12 @@ export class GroceryListService {
   constructor(private _http: Http) {}
 
   load() {
-    let headers = new Headers();
-    headers.append("Authorization", "Bearer " + Config.token);
-
-    return this._http.get(Config.apiUrl + "Groceries", {
-      headers: headers
-    })
+    return this._http.get(Config.apiUrl + "meetings")
     .map(res => res.json())
     .map(data => {
       let groceryList = [];
-      data.Result.forEach((grocery) => {
-        groceryList.push(new Grocery(grocery.Id, grocery.Name));
+      data.forEach((grocery) => {
+        groceryList.push(new Grocery(grocery.id, grocery.name));
       });
       return groceryList;
     })
@@ -33,18 +28,12 @@ export class GroceryListService {
   }
 
   add(name: string) {
-    let headers = new Headers();
-    headers.append("Authorization", "Bearer " + Config.token);
-    headers.append("Content-Type", "application/json");
-
     return this._http.post(
-      Config.apiUrl + "Groceries",
-      JSON.stringify({ Name: name }),
-      { headers: headers }
-    )
+      Config.apiUrl + "meetings",
+      JSON.stringify({ name: name ,startDate: "12/05/2016", endDate: "12/05/2016", meetingStart: "12/05/2016", meetingEnd:"12/05/2016"}))
     .map(res => res.json())
     .map(data => {
-      return new Grocery(data.Result.Id, name);
+      return new Grocery(data.id, name);
     })
     .catch(this.handleErrors);
   }
